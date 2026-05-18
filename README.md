@@ -5,35 +5,44 @@ Gateway を 1 つ立てておけば、誰でもコンソールから Harness を
 
 ## アーキテクチャ
 
-```
-┌─────────────────────────────────────────────────────┐
-│  CDK でデプロイ                                       │
-│                                                       │
-│  S3 ──sync──▶ Bedrock KB (S3 Vectors)                │
-│                    ▲                                  │
-│                    │ retrieve                         │
-│               Lambda Function                         │
-│                    ▲                                  │
-│                    │ Target 1: kb-retrieve            │
-│                                                       │
-│              AgentCore Gateway (IAM auth)             │
-│                                                       │
-│                    │ Target 2: web-tools              │
-│                    ▼                                  │
-│               MCP Server (FastMCP on Runtime)         │
-│               └── fetch_webpage                       │
-│                                                       │
-│                    │ Target 3: aws-knowledge          │
-│                    ▼                                  │
-│               AWS Knowledge MCP Server (公式)         │
-│               └── search_documentation 他5ツール      │
-└───────────────────────┬─────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────┐
-│  コンソールで Managed Harness を作成（利用者）        │
-│  └── Tool: ↑ の Gateway を追加するだけ               │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph cdk["CDK でデプロイ（インフラ提供者）"]
+        direction TB
+        GW["AgentCore Gateway\n(IAM auth)"]
+
+        subgraph target1["Target 1: kb-retrieve"]
+            Lambda["Lambda Function"]
+            KB["Bedrock Knowledge Base"]
+            S3V["S3 Vectors"]
+            S3D["S3 Bucket\n(Documents)"]
+        end
+
+        subgraph target2["Target 2: web-tools"]
+            Runtime["AgentCore Runtime\n(FastMCP)"]
+            FetchTool["fetch_webpage"]
+        end
+
+        subgraph target3["Target 3: aws-knowledge"]
+            AWSKnowledge["AWS Knowledge\nMCP Server (公式)"]
+            AWSTools["search_documentation 他5ツール"]
+        end
+
+        GW --> Lambda
+        Lambda --> KB
+        KB --> S3V
+        S3D -->|sync| KB
+        GW --> Runtime
+        Runtime --> FetchTool
+        GW --> AWSKnowledge
+        AWSKnowledge --> AWSTools
+    end
+
+    subgraph user["利用者"]
+        Harness["Managed Harness\n(コンソールで作成)"]
+    end
+
+    Harness -->|"Gateway を追加するだけ"| GW
 ```
 
 ## 提供ツール
