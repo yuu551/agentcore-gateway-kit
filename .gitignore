@@ -1,0 +1,12 @@
+node_modules/
+dist/
+cdk.out/
+*.js
+*.d.ts
+!jest.config.js
+*.generated.ts
+.env
+.cdk.staging/
+excalidraw.log
+blog.md
+implementation_plan.md
