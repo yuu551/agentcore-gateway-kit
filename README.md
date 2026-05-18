@@ -55,7 +55,6 @@ flowchart TB
 
 ## 前提条件
 
-- AWS アカウントで Bedrock モデルアクセスが有効（Amazon Titan Embed Text V2）
 - CDK Bootstrap 済み (`npx cdk bootstrap`)
 - Node.js 18+
 - Docker（Runtime コンテナビルド用）
