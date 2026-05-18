@@ -57,7 +57,7 @@ flowchart TB
 
 - AWS アカウントで Bedrock モデルアクセスが有効（Amazon Titan Embed Text V2）
 - CDK Bootstrap 済み (`npx cdk bootstrap`)
-- Node.js 18+ / pnpm
+- Node.js 18+
 - Docker（Runtime コンテナビルド用）
 - デプロイリージョン: us-east-1
 
@@ -65,7 +65,7 @@ flowchart TB
 
 ```bash
 # 依存インストール
-pnpm install
+npm install
 
 # テンプレート確認
 npx cdk synth
