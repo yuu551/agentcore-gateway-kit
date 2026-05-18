@@ -127,6 +127,7 @@ export class GatewayStack extends cdk.Stack {
     webToolsTarget.addDependency(gatewayDefaultPolicy);
 
     // Target 3: AWS Knowledge MCP Server (L1)
+    // credentialProviderConfigurations は Required: No なので省略（No Auth）
     new bedrockagentcore.CfnGatewayTarget(this, 'AWSKnowledgeTarget', {
       gatewayIdentifier: gateway.gatewayId,
       name: 'aws-knowledge',
@@ -138,16 +139,6 @@ export class GatewayStack extends cdk.Stack {
           },
         },
       },
-      credentialProviderConfigurations: [
-        {
-          credentialProviderType: 'GATEWAY_IAM_ROLE',
-          credentialProvider: {
-            iamCredentialProvider: {
-              service: 'execute-api',
-            },
-          },
-        },
-      ],
     });
 
     // --- Outputs ---
